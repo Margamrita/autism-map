@@ -1,0 +1,65 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "L.A. Speech & Language Therapy Center, Inc.",
+        "address": "5761 Buckingham Pkwy, Culver City, CA 90230",
+        "phone": "(310) 202-8442"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-118.3996, 33.9857]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Boone Fetter Clinic (Children’s Hospital LA)",
+        "address": "1300 N Vermont Ave, Ste 905, Los Angeles, CA 90027",
+        "phone": "(323) 361-1353"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-118.2921, 34.0903]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Full Potential Speech Therapy Center, Inc.",
+        "address": "27393 Ynez Rd Ste 153, Temecula, CA 92591‑4605",
+        "phone": "(951) 699-9407"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-117.1485, 33.4932]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Speech and Language Development Center (SLDC)",
+        "address": "43385 Business Park Dr, Ste 140, Temecula, CA 92590",
+        "phone": "(951) 894-8777"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-117.1548, 33.4826]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "MeBe Family – Los Angeles (Sherman Oaks location)",
+        "address": "15300 Ventura Blvd, Suite 503 A, Sherman Oaks, CA 91403",
+        "phone": "(818) 649-3900"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-118.4463, 34.1514]
+      }
+    }
+  ]
+}
