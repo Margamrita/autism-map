@@ -9,6 +9,8 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <!-- Leaflet Search CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet-control-search/dist/leaflet-search.min.css" />
+  <!-- Leaflet Control Geocoder CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 
   <style>
     body { margin: 0; }
@@ -22,6 +24,8 @@
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <!-- Leaflet Search JS -->
 <script src="https://unpkg.com/leaflet-control-search/dist/leaflet-search.min.js"></script>
+<!-- Leaflet Control Geocoder JS -->
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
 <script>
   // Initialize map
@@ -53,7 +57,7 @@
         }
       });
 
-      // Add search control
+      // Add search control for points
       var searchControl = new L.Control.Search({
         layer: markersLayer,
         propertyName: 'featureName',
@@ -70,6 +74,29 @@
       map.addControl(searchControl);
     })
     .catch(err => console.error("Error loading GeoJSON:", err));
+
+  // Add address search bar (geocoder)
+  L.Control.geocoder({
+    defaultMarkGeocode: false
+  })
+  .on('markgeocode', function(e) {
+    var bbox = e.geocode.bbox;
+    var poly = L.polygon([
+      bbox.getSouthEast(),
+      bbox.getNorthEast(),
+      bbox.getNorthWest(),
+      bbox.getSouthWest()
+    ]);
+    map.fitBounds(poly.getBounds());
+
+    if (window.searchMarker) {
+      map.removeLayer(window.searchMarker);
+    }
+    window.searchMarker = L.marker(e.geocode.center).addTo(map)
+      .bindPopup(e.geocode.name)
+      .openPopup();
+  })
+  .addTo(map);
 </script>
 </body>
 </html>
