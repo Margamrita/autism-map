@@ -91,9 +91,9 @@
         L.geoJSON(data, {
           onEachFeature: function(feature, layer) {
             if (feature.properties) {
-              layer.bindPopup("<b>" + feature.properties.name + "</b><br/>" +
-                              feature.properties.address + "<br/>" +
-                              (feature.properties.phone || ""));
+              layer.bindPopup("<b>" + feature.properties.Name + "</b><br/>" +
+                              feature.properties.Address + "<br/>" +
+                              (feature.properties.Phone || ""));
             }
           }
         }).addTo(map);
