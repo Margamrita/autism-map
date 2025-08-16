@@ -10,16 +10,27 @@
     body, html { margin: 0; padding: 0; height: 100%; }
     #map { height: 100vh; width: 100vw; }
 
-    /* Centered search bar */
-    .leaflet-control-geocoder {
-      position: absolute !important;
-      top: 20px !important;
-      left: 50% !important;
-      transform: translateX(-50%) !important;
-      width: 60% !important;
+    /* Custom container for search bar */
+    #search-container {
+      position: absolute;
+      top: 10%;              /* ~top 1/3 of the window */
+      left: 50%;             /* center horizontally */
+      transform: translateX(-50%);
+      width: 60%;
       max-width: 500px;
       z-index: 1000;
+    }
+
+    /* Force geocoder to fill our container */
+    #search-container .leaflet-control-geocoder {
+      width: 100% !important;
+      margin: 0 !important;
+      float: none !important;
+    }
+
+    .leaflet-control-geocoder-form {
       display: flex !important;
+      width: 100% !important;
     }
 
     .leaflet-control-geocoder-form input {
@@ -49,6 +60,7 @@
 </head>
 <body>
   <div id="map"></div>
+  <div id="search-container"></div> <!-- our wrapper -->
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
@@ -85,8 +97,8 @@
         }).addTo(map);
       });
 
-    // Geocoder search
-    L.Control.geocoder({
+    // Geocoder search, but render it into our custom container
+    var geocoder = L.Control.geocoder({
       defaultMarkGeocode: false
     })
     .on('markgeocode', function(e) {
@@ -107,8 +119,13 @@
       window.searchMarker = L.marker(e.geocode.center, { icon: homeIcon }).addTo(map)
         .bindPopup("🏠 " + e.geocode.name)
         .openPopup();
-    })
-    .addTo(map);
+    });
+
+    geocoder.addTo(map);
+
+    // Move geocoder element into our custom div
+    var geocoderEl = document.querySelector('.leaflet-control-geocoder');
+    document.getElementById('search-container').appendChild(geocoderEl);
   </script>
 </body>
 </html>
