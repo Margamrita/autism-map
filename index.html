@@ -1,136 +1,108 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Autism Therapy Services Map</title>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <!-- Leaflet Search CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-search/dist/leaflet-search.min.css" />
-  <!-- Leaflet Control Geocoder CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"/>
   <style>
-    body { margin: 0; font-family: "Segoe UI", Roboto, sans-serif; }
-    #map { height: 100vh; width: 100%; }
+    body, html { margin: 0; padding: 0; height: 100%; }
+    #map { height: 100vh; width: 100vw; }
 
-    /* Custom search bar style */
+    /* Centered search bar */
     .leaflet-control-geocoder {
-      position: absolute !important;
       left: 50% !important;
-      top: 15px !important;
-      transform: translateX(-50%);
-      width: 60%;
+      top: 20px !important;
+      transform: translateX(-50%) !important;
+      position: absolute !important;
+      width: 60% !important;
       max-width: 500px;
       z-index: 1000;
     }
     .leaflet-control-geocoder-form input {
       width: 100% !important;
-      height: 40px !important;
+      height: 44px !important;
       font-size: 16px !important;
-      padding: 8px 12px !important;
-      border-radius: 20px !important;
+      padding: 8px 14px !important;
+      border-radius: 22px !important;
       border: 1px solid #ccc !important;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    }
-
-    /* Popup style */
-    .leaflet-popup-content {
-      font-size: 14px;
-      line-height: 1.4;
-    }
-    .leaflet-popup-content b {
-      font-size: 16px;
-      color: #0078A8;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
     }
   </style>
 </head>
 <body>
-<div id="map"></div>
+  <div id="map"></div>
 
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<!-- Leaflet Search JS -->
-<script src="https://unpkg.com/leaflet-control-search/dist/leaflet-search.min.js"></script>
-<!-- Leaflet Control Geocoder JS -->
-<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
-<script>
-  // Initialize map
-  var map = L.map('map').setView([33.6, -117.7], 11);
+  <script>
+    // Initialize map
+    var map = L.map('map').setView([33.7, -117.9], 10);
 
-  // Base map layer
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-  }).addTo(map);
+    // Base map tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+    }).addTo(map);
 
-  let markersLayer = new L.LayerGroup();
-  map.addLayer(markersLayer);
+    // Custom icons
+    var homeIcon = L.icon({
+      iconUrl: "https://cdn-icons-png.flaticon.com/512/69/69524.png", // house symbol
+      iconSize: [38, 38],
+      iconAnchor: [19, 38],
+      popupAnchor: [0, -38]
+    });
 
-  // Load GeoJSON data
-  fetch('services.geojson')
-    .then(response => response.json())
-    .then(data => {
-      let geojsonLayer = L.geoJSON(data, {
-        onEachFeature: function (feature, layer) {
-          let popupContent = `<b>${feature.properties.name}</b><br>
-                               ${feature.properties.address || ''}<br>
-                               ${feature.properties.phone || ''}`;
-          layer.bindPopup(popupContent);
-          layer.featureName = feature.properties.name; // for search
-          markersLayer.addLayer(layer);
-        },
-        pointToLayer: function (feature, latlng) {
-          return L.marker(latlng);
-        }
+    var clinicIcon = L.icon({
+      iconUrl: "https://cdn-icons-png.flaticon.com/512/2967/2967350.png", // clinic symbol
+      iconSize: [34, 34],
+      iconAnchor: [17, 34],
+      popupAnchor: [0, -34]
+    });
+
+    // Load therapy services from GeoJSON
+    fetch('services.geojson')
+      .then(res => res.json())
+      .then(data => {
+        L.geoJSON(data, {
+          pointToLayer: function(feature, latlng) {
+            return L.marker(latlng, { icon: clinicIcon });
+          },
+          onEachFeature: function(feature, layer) {
+            if (feature.properties) {
+              layer.bindPopup("<b>" + feature.properties.name + "</b><br/>" +
+                              feature.properties.address + "<br/>" +
+                              (feature.properties.phone || ""));
+            }
+          }
+        }).addTo(map);
       });
 
-      // Add search control for points
-      var searchControl = new L.Control.Search({
-        layer: markersLayer,
-        propertyName: 'featureName',
-        marker: false,
-        moveToLocation: function(latlng, title, map) {
-          map.setView(latlng, 15); // zoom in when found
-        }
-      });
-
-      searchControl.on('search:locationfound', function(e) {
-        e.layer.openPopup();
-      });
-
-      map.addControl(searchControl);
+    // Address search bar (geocoder)
+    L.Control.geocoder({
+      defaultMarkGeocode: false
     })
-    .catch(err => console.error("Error loading GeoJSON:", err));
+    .on('markgeocode', function(e) {
+      var bbox = e.geocode.bbox;
+      var poly = L.polygon([
+        bbox.getSouthEast(),
+        bbox.getNorthEast(),
+        bbox.getNorthWest(),
+        bbox.getSouthWest()
+      ]);
+      map.fitBounds(poly.getBounds());
 
-  // Add address search bar (geocoder)
-  var geocoder = L.Control.geocoder({
-    defaultMarkGeocode: false
-  })
-  .on('markgeocode', function(e) {
-    var bbox = e.geocode.bbox;
-    var poly = L.polygon([
-      bbox.getSouthEast(),
-      bbox.getNorthEast(),
-      bbox.getNorthWest(),
-      bbox.getSouthWest()
-    ]);
-    map.fitBounds(poly.getBounds());
+      if (window.searchMarker) {
+        map.removeLayer(window.searchMarker);
+      }
 
-    if (window.searchMarker) {
-      map.removeLayer(window.searchMarker);
-    }
-    window.searchMarker = L.marker(e.geocode.center).addTo(map)
-      .bindPopup(e.geocode.name)
-      .openPopup();
-  })
-  .addTo(map);
-
-  // Move geocoder control into custom centered position
-  var geocoderEl = document.getElementsByClassName("leaflet-control-geocoder")[0];
-  geocoderEl.classList.add("custom-geocoder");
-</script>
+      // Add marker with home icon
+      window.searchMarker = L.marker(e.geocode.center, { icon: homeIcon }).addTo(map)
+        .bindPopup("🏠 " + e.geocode.name)
+        .openPopup();
+    })
+    .addTo(map);
+  </script>
 </body>
 </html>
