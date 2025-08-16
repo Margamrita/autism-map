@@ -1,52 +1,79 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Autism Therapy Services Map</title>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"/>
   <style>
-    #map { height: 100vh; width: 100%; }
+    html, body { margin: 0; padding: 0; height: 100%; }
+    #map { height: 100vh; width: 100vw; }
 
-    /* Centered search bar */
-    .leaflet-control-geocoder {
-      left: 50% !important;
-      top: 20px !important;
-      transform: translateX(-50%) !important;
-      position: absolute !important;
-      width: 60% !important;
-      max-width: 500px;
+    /* Fixed search bar wrapper with margins */
+    #search-wrapper {
+      position: fixed;   /* stays in viewport */
+      top: 30px;         /* margin from top */
+      left: 30px;        /* margin from left */
+      right: 30px;       /* margin from right */
+      max-width: 500px;  /* optional max width */
       z-index: 1000;
     }
-    .leaflet-control-geocoder-form input {
+
+    #search-wrapper .leaflet-control-geocoder {
       width: 100% !important;
+    }
+
+    #search-wrapper .leaflet-control-geocoder-form {
+      display: flex !important;
+      width: 100% !important;
+    }
+
+    #search-wrapper .leaflet-control-geocoder-form input {
+      flex: 1;
       height: 44px !important;
-      font-size: 16px !important;
-      padding: 8px 14px !important;
-      border-radius: 22px !important;
-      border: 1px solid #ccc !important;
+      font-size: 16px;
+      padding: 8px 14px;
+      border-radius: 22px 0 0 22px;
+      border: 1px solid #ccc;
       box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    }
+
+    #search-wrapper .leaflet-control-geocoder-icon {
+      height: 44px;
+      width: 44px;
+      border-radius: 0 22px 22px 0;
+      background-color: #4CAF50;
+      background-size: 60% auto;
+      background-position: center;
+      background-repeat: no-repeat;
+      cursor: pointer;
+    }
+
+    #search-wrapper .leaflet-control-geocoder-icon:hover {
+      background-color: #45a049;
     }
   </style>
 </head>
 <body>
+  <div id="search-wrapper">
+    <div id="search-container"></div>
+  </div>
   <div id="map"></div>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
   <script>
     // Initialize map
-    var map = L.map('map').setView([34.05, -118.25], 9);
+    var map = L.map('map').setView([34.05, -118.25], 10);
 
-    // Add basemap
+    // Base tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
-    // Home icon
+    // Home marker icon
     var homeIcon = L.icon({
       iconUrl: "https://cdn-icons-png.flaticon.com/512/69/69524.png",
       iconSize: [38, 38],
@@ -57,13 +84,33 @@
     var searchMarker;
     var bufferCircle;
 
-    // Address search bar
-    L.Control.geocoder({
-      defaultMarkGeocode: false
-    })
-    .on('markgeocode', function(e) {
+    // Load therapy centers (default pins)
+    fetch('services.geojson')
+      .then(res => res.json())
+      .then(data => {
+        L.geoJSON(data, {
+          onEachFeature: function(feature, layer) {
+            if (feature.properties) {
+              layer.bindPopup("<b>" + feature.properties.name + "</b><br/>" +
+                              feature.properties.address + "<br/>" +
+                              (feature.properties.phone || ""));
+            }
+          }
+        }).addTo(map);
+      });
+
+    // Geocoder search
+    var geocoder = L.Control.geocoder({ defaultMarkGeocode: false }).addTo(map);
+
+    // Move geocoder into our fixed wrapper
+    var geocoderEl = document.querySelector('.leaflet-control-geocoder');
+    document.getElementById('search-container').appendChild(geocoderEl);
+
+    // When a user searches
+    geocoder.on('markgeocode', function(e) {
       var latlng = e.geocode.center;
 
+      // Remove old marker/circle
       if (searchMarker) map.removeLayer(searchMarker);
       if (bufferCircle) map.removeLayer(bufferCircle);
 
@@ -72,7 +119,7 @@
         .bindPopup("🏠 " + e.geocode.name)
         .openPopup();
 
-      // Ask user for buffer distance
+      // Ask for buffer distance
       var miles = prompt("Enter buffer distance in miles:", "5");
       if (miles && !isNaN(miles)) {
         bufferCircle = L.circle(latlng, {
@@ -86,21 +133,7 @@
       } else {
         map.setView(latlng, 12);
       }
-    })
-    .addTo(map);
-
-    // Example therapy centers (load your GeoJSON instead)
-    fetch("services.geojson")
-      .then(res => res.json())
-      .then(data => {
-        L.geoJSON(data, {
-          onEachFeature: function (feature, layer) {
-            if (feature.properties) {
-              layer.bindPopup("<b>" + feature.properties.name + "</b><br/>" + feature.properties.address);
-            }
-          }
-        }).addTo(map);
-      });
+    });
   </script>
 </body>
 </html>
