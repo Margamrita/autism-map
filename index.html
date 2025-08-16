@@ -12,22 +12,38 @@
 
     /* Centered search bar */
     .leaflet-control-geocoder {
-      left: 50% !important;
-      top: 20px !important;
-      transform: translateX(-50%) !important;
       position: absolute !important;
+      top: 20px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
       width: 60% !important;
       max-width: 500px;
       z-index: 1000;
+      display: flex !important;
     }
+
     .leaflet-control-geocoder-form input {
-      width: 100% !important;
+      flex: 1;
       height: 44px !important;
       font-size: 16px !important;
       padding: 8px 14px !important;
-      border-radius: 22px !important;
+      border-radius: 22px 0 0 22px !important;
       border: 1px solid #ccc !important;
       box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    }
+
+    .leaflet-control-geocoder-icon {
+      height: 44px !important;
+      width: 44px !important;
+      border-radius: 0 22px 22px 0 !important;
+      background-color: #4CAF50 !important;
+      background-size: 60% auto !important;
+      background-position: center !important;
+      background-repeat: no-repeat !important;
+      cursor: pointer;
+    }
+    .leaflet-control-geocoder-icon:hover {
+      background-color: #45a049 !important;
     }
   </style>
 </head>
@@ -41,34 +57,24 @@
     // Initialize map
     var map = L.map('map').setView([33.7, -117.9], 10);
 
-    // Base map tiles
+    // Base layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    // Custom icons
+    // Home icon
     var homeIcon = L.icon({
-      iconUrl: "https://cdn-icons-png.flaticon.com/512/69/69524.png", // house symbol
+      iconUrl: "https://cdn-icons-png.flaticon.com/512/69/69524.png",
       iconSize: [38, 38],
       iconAnchor: [19, 38],
       popupAnchor: [0, -38]
     });
 
-    var clinicIcon = L.icon({
-      iconUrl: "https://cdn-icons-png.flaticon.com/512/2967/2967350.png", // clinic symbol
-      iconSize: [34, 34],
-      iconAnchor: [17, 34],
-      popupAnchor: [0, -34]
-    });
-
-    // Load therapy services from GeoJSON
+    // Load therapy centers (default Leaflet pins)
     fetch('services.geojson')
       .then(res => res.json())
       .then(data => {
         L.geoJSON(data, {
-          pointToLayer: function(feature, latlng) {
-            return L.marker(latlng, { icon: clinicIcon });
-          },
           onEachFeature: function(feature, layer) {
             if (feature.properties) {
               layer.bindPopup("<b>" + feature.properties.name + "</b><br/>" +
@@ -79,7 +85,7 @@
         }).addTo(map);
       });
 
-    // Address search bar (geocoder)
+    // Geocoder search
     L.Control.geocoder({
       defaultMarkGeocode: false
     })
@@ -97,7 +103,7 @@
         map.removeLayer(window.searchMarker);
       }
 
-      // Add marker with home icon
+      // Home marker
       window.searchMarker = L.marker(e.geocode.center, { icon: homeIcon }).addTo(map)
         .bindPopup("🏠 " + e.geocode.name)
         .openPopup();
