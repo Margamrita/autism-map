@@ -1,65 +1,23 @@
 {
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "L.A. Speech & Language Therapy Center, Inc.",
-        "address": "5761 Buckingham Pkwy, Culver City, CA 90230",
-        "phone": "(310) 202-8442"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [-118.3996, 33.9857]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Boone Fetter Clinic (Children’s Hospital LA)",
-        "address": "1300 N Vermont Ave, Ste 905, Los Angeles, CA 90027",
-        "phone": "(323) 361-1353"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [-118.2921, 34.0903]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Full Potential Speech Therapy Center, Inc.",
-        "address": "27393 Ynez Rd Ste 153, Temecula, CA 92591‑4605",
-        "phone": "(951) 699-9407"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [-117.1485, 33.4932]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Speech and Language Development Center (SLDC)",
-        "address": "43385 Business Park Dr, Ste 140, Temecula, CA 92590",
-        "phone": "(951) 894-8777"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [-117.1548, 33.4826]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "MeBe Family – Los Angeles (Sherman Oaks location)",
-        "address": "15300 Ventura Blvd, Suite 503 A, Sherman Oaks, CA 91403",
-        "phone": "(818) 649-3900"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [-118.4463, 34.1514]
-      }
-    }
-  ]
+"type": "FeatureCollection",
+"name": "temp1",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "ID": "1", "Name": "Infinity Kids", "Suite": "502", "Address": "22691 Lambert St", "City": "Lake Forest", "State": "CA", "Zip": "", "Phone": "", "result_num": "0", "osm_id": "349285365", "display_name": "22691, Lambert Street, Cañada Business Center, Lake Forest, Orange County, California, 92630, United States", "category": "building", "type": "commercial", "latlong": "33.63291355,-117.7141398" }, "geometry": { "type": "Point", "coordinates": [ -117.7141398, 33.63291355 ] } },
+{ "type": "Feature", "properties": { "ID": "4", "Name": "Grace Therapies", "Suite": "", "Address": "22672 Lambert St", "City": "Lake Forest", "State": "CA", "Zip": "", "Phone": "", "result_num": "0", "osm_id": "349285364", "display_name": "22672, Lambert Street, Cañada Business Center, Lake Forest, Orange County, California, 92630, United States", "category": "building", "type": "commercial", "latlong": "33.63356805,-117.71321887926561" }, "geometry": { "type": "Point", "coordinates": [ -117.713218879265611, 33.63356805 ] } },
+{ "type": "Feature", "properties": { "ID": "5", "Name": "Crow Speech Therapy", "Suite": "233", "Address": "23120 Alicia Pkwy", "City": "", "State": "CA", "Zip": "", "Phone": "", "result_num": "0", "osm_id": "1120434942", "display_name": "23120, Alicia Parkway, Mission Viejo, Orange County, California, 92692, United States", "category": "building", "type": "yes", "latlong": "33.6273665,-117.65054519876925" }, "geometry": { "type": "Point", "coordinates": [ -117.650545198769251, 33.6273665 ] } },
+{ "type": "Feature", "properties": { "ID": "6", "Name": "California Speech & Language Therapy Center", "Suite": "150", "Address": "23041 Avenida De La Carlota", "City": "Laguna Hills", "State": "CA", "Zip": "", "Phone": "", "result_num": "0", "osm_id": "1137367305", "display_name": "23041, Avenida De La Carlota, North Laguna Hills, Laguna Hills, Orange County, California, 92653, United States", "category": "building", "type": "yes", "latlong": "33.626818799999995,-117.7223121" }, "geometry": { "type": "Point", "coordinates": [ -117.7223121, 33.6268188 ] } },
+{ "type": "Feature", "properties": { "ID": "7", "Name": "Children's Learning Connection Laguna Hills", "Suite": "110", "Address": "25201 Paseo De Alicia", "City": "Laguna Hills", "State": "CA", "Zip": "", "Phone": "", "result_num": "0", "osm_id": "1166179255", "display_name": "25201, Paseo de Alicia, Laguna Hills, Orange County, California, 92653, United States", "category": "building", "type": "yes", "latlong": "33.6026749,-117.6896187" }, "geometry": { "type": "Point", "coordinates": [ -117.6896187, 33.6026749 ] } },
+{ "type": "Feature", "properties": { "ID": "8", "Name": "Amayzing Kids", "Suite": "600", "Address": "29811 Santa Margarita Pkwy", "City": "", "State": "CA", "Zip": "", "Phone": "", "result_num": "0", "osm_id": "436657858", "display_name": "29811, Santa Margarita Parkway, Rancho Santa Margarita, Orange County, California, 92688, United States", "category": "building", "type": "commercial", "latlong": "33.6383199,-117.60963589560546" }, "geometry": { "type": "Point", "coordinates": [ -117.609635895605464, 33.6383199 ] } },
+{ "type": "Feature", "properties": { "ID": "10", "Name": "South County Pediatric Speech", "Suite": "107", "Address": "26400 La Alameda", "City": "", "State": "CA", "Zip": "", "Phone": "", "result_num": "0", "osm_id": "789210872", "display_name": "26400, La Alameda, Mission Viejo, Orange County, California, 92691, United States", "category": "building", "type": "commercial", "latlong": "33.563540849999995,-117.66940704757374" }, "geometry": { "type": "Point", "coordinates": [ -117.669407047573742, 33.56354085 ] } },
+{ "type": "Feature", "properties": { "ID": "11", "Name": "Beyond Words", "Suite": "136", "Address": "16 Technology Dr", "City": "Irvine", "State": "CA", "Zip": "", "Phone": "", "result_num": "0", "osm_id": "351750556", "display_name": "16, Technology Drive, Irvine Spectrum, Irvine, Orange County, California, 92618, United States", "category": "building", "type": "commercial", "latlong": "33.650749399999995,-117.73592006493325" }, "geometry": { "type": "Point", "coordinates": [ -117.735920064933254, 33.6507494 ] } },
+{ "type": "Feature", "properties": { "ID": "12", "Name": "Newport Language & Speech Center", "Suite": "200", "Address": "23361 Madero", "City": "", "State": "CA", "Zip": "", "Phone": "", "result_num": "0", "osm_id": "13310714", "display_name": "23361, Madero, Mission Viejo, Orange County, California, 92691, United States", "category": "place", "type": "house", "latlong": "33.62385433984662,-117.67886098805485" }, "geometry": { "type": "Point", "coordinates": [ -117.678860988054851, 33.623854339846623 ] } },
+{ "type": "Feature", "properties": { "ID": "13", "Name": "Abington Speech Pathology Services", "Suite": "240", "Address": "23101 Lake Center Dr", "City": "Lake Forest", "State": "CA", "Zip": "", "Phone": "", "result_num": "0", "osm_id": "347399585", "display_name": "23101, Lake Center Drive, Lake Forest, Orange County, California, 92630, United States", "category": "building", "type": "commercial", "latlong": "33.627223199999996,-117.7175149" }, "geometry": { "type": "Point", "coordinates": [ -117.7175149, 33.6272232 ] } },
+{ "type": "Feature", "properties": { "ID": "14", "Name": "Autism Behavior Services", "Suite": "", "Address": "23701 Birtcher Dr", "City": "", "State": "CA", "Zip": "", "Phone": "", "result_num": "0", "osm_id": "349300974", "display_name": "23701, Birtcher Drive, Lake Forest Business Center, Lake Forest, Orange County, California, 92630, United States", "category": "building", "type": "commercial", "latlong": "33.6336666,-117.71629604123012" }, "geometry": { "type": "Point", "coordinates": [ -117.716296041230123, 33.6336666 ] } },
+{ "type": "Feature", "properties": { "ID": "15", "Name": "Speech Point", "Suite": "220", "Address": "220 Technology Dr", "City": "Irvine", "State": "CA", "Zip": "", "Phone": "", "result_num": "0", "osm_id": "351754813", "display_name": "220, Technology Drive, Irvine Spectrum, Irvine, Orange County, California, 92618, United States", "category": "building", "type": "commercial", "latlong": "33.66733755,-117.74992792239435" }, "geometry": { "type": "Point", "coordinates": [ -117.749927922394349, 33.66733755 ] } },
+{ "type": "Feature", "properties": { "ID": "16", "Name": "Providence Speech and Hearing Center", "Suite": "150", "Address": "23361 Madero", "City": "", "State": "CA", "Zip": "", "Phone": "", "result_num": "0", "osm_id": "13310714", "display_name": "23361, Madero, Mission Viejo, Orange County, California, 92691, United States", "category": "place", "type": "house", "latlong": "33.62385433984662,-117.67886098805485" }, "geometry": { "type": "Point", "coordinates": [ -117.678860988054851, 33.623854339846623 ] } },
+{ "type": "Feature", "properties": { "ID": "17", "Name": "Let's Talk Speech and Language Therapy", "Suite": "210", "Address": "27285 Las Ramblas", "City": "", "State": "CA", "Zip": "", "Phone": "", "result_num": "0", "osm_id": "4751011", "display_name": "27285, Las Ramblas, Mission Viejo, Orange County, California, 92691, United States", "category": "building", "type": "yes", "latlong": "33.5672436,-117.6699543" }, "geometry": { "type": "Point", "coordinates": [ -117.6699543, 33.5672436 ] } },
+{ "type": "Feature", "properties": { "ID": "18", "Name": "Butterflies Therapies", "Suite": "300a", "Address": "27001 La Paz Rd ", "City": "", "State": "CA", "Zip": "", "Phone": "", "result_num": "0", "osm_id": "765284392", "display_name": "27001, La Paz Road, Mission Viejo, Orange County, California, 92691, United States", "category": "building", "type": "yes", "latlong": "33.597893049999996,-117.65912596836807" }, "geometry": { "type": "Point", "coordinates": [ -117.659125968368073, 33.59789305 ] } },
+{ "type": "Feature", "properties": { "ID": "19", "Name": "Salt and Sun Speech Therapy", "Suite": "110", "Address": "65 Enterprise", "City": "", "State": "CA", "Zip": "", "Phone": "", "result_num": "0", "osm_id": "401268882", "display_name": "65, Enterprise, Summit Office Campus, Aliso Viejo, Orange County, California, 92656, United States", "category": "place", "type": "house", "latlong": "33.583048804872256,-117.72954862438239" }, "geometry": { "type": "Point", "coordinates": [ -117.729548624382389, 33.583048804872256 ] } }
+]
 }
