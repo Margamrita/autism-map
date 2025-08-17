@@ -30,7 +30,7 @@
     #results {
       position: fixed;
       top: 80px; right: 20px;
-      width: 300px; max-height: 70%;
+      width: 320px; max-height: 65%;
       overflow-y: auto;
       background: white;
       border-radius: 12px;
@@ -46,6 +46,21 @@
       cursor: pointer;
     }
     #results .item:hover { background:#f5f5f5; }
+
+    /* Disclaimer box */
+    #disclaimer {
+      position: fixed;
+      bottom: 10px; left: 50%; transform: translateX(-50%);
+      width: 90%; max-width: 800px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-family: sans-serif;
+      color: #444;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 900;
+    }
   </style>
 </head>
 <body>
@@ -56,6 +71,10 @@
   <div id="results" style="display:none">
     <h3>Nearby Services</h3>
     <div id="results-list"></div>
+  </div>
+  <div id="disclaimer">
+    ⚠️ <b>Disclaimer:</b> This map displays therapy service locations using publicly available information. 
+    Accuracy of addresses, phone numbers, and services is not guaranteed. Please contact providers directly to confirm details before visiting.
   </div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -85,15 +104,16 @@
       .then(res => res.json())
       .then(data => { defaultMarkers.addData(data); });
 
-    var geocoder = L.Control.geocoder({ defaultMarkGeocode: false }).addTo(map);
+    // Keep search bar open, add placeholder text
+    var geocoder = L.Control.geocoder({
+      defaultMarkGeocode: false,
+      collapsed: false,
+      placeholder: "Enter your address or street intersection"
+    }).addTo(map);
     var geocoderEl = document.querySelector('.leaflet-control-geocoder');
     document.getElementById('search-container').appendChild(geocoderEl);
 
     var searchMarker, bufferCircle;
-
-    function distanceInMeters(a, b) {
-      return map.distance(a, b);
-    }
 
     geocoder.on('markgeocode', function(e) {
       var latlng = e.geocode.center;
@@ -111,13 +131,18 @@
 
         map.fitBounds(bufferCircle.getBounds());
 
-        // Filter providers inside buffer
+        // Collect providers inside buffer
         var inside = [];
         defaultMarkers.eachLayer(function(layer) {
           if (layer.getLatLng && bufferCircle.getBounds().contains(layer.getLatLng())) {
-            inside.push(layer);
+            var distMeters = map.distance(latlng, layer.getLatLng());
+            var distMiles = (distMeters / 1609.34).toFixed(2);
+            inside.push({ layer: layer, dist: parseFloat(distMiles) });
           }
         });
+
+        // Sort by distance
+        inside.sort(function(a, b) { return a.dist - b.dist; });
 
         // Update results panel
         var resultsDiv = document.getElementById('results');
@@ -125,14 +150,15 @@
         resultsList.innerHTML = "";
         if (inside.length > 0) {
           resultsDiv.style.display = "block";
-          inside.forEach(function(layer) {
-            var props = layer.feature.properties;
+          inside.forEach(function(item) {
+            var props = item.layer.feature.properties;
             var div = document.createElement('div');
             div.className = "item";
-            div.innerHTML = "<b>" + props.Name + "</b><br/>" + props.Address;
+            div.innerHTML = "<b>" + props.Name + "</b><br/>" + props.Address +
+                            "<br/><small>📏 " + item.dist.toFixed(2) + " miles away</small>";
             div.onclick = function() {
-              map.setView(layer.getLatLng(), 15);
-              layer.openPopup();
+              map.setView(item.layer.getLatLng(), 15);
+              item.layer.openPopup();
             };
             resultsList.appendChild(div);
           });
