@@ -30,7 +30,7 @@
     #results {
       position: fixed;
       top: 80px; right: 20px;
-      width: 320px; max-height: 65%;
+      width: 340px; max-height: 65%;
       overflow-y: auto;
       background: white;
       border-radius: 12px;
@@ -114,8 +114,28 @@
     document.getElementById('search-container').appendChild(geocoderEl);
 
     var searchMarker, bufferCircle;
+    const ORS_API_KEY = "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6Ijk2MDc5NzU5NjYzZjQyODQ4YTE3NGFmNTUzZWVjMGI2IiwiaCI6Im11cm11cjY0In0=";  // <--- Replace with your key
 
-    geocoder.on('markgeocode', function(e) {
+    // Function to get driving distance/time from ORS
+    async function getDrivingDistance(start, end) {
+      const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_API_KEY}&start=${start.lng},${start.lat}&end=${end.lng},${end.lat}`;
+      try {
+        let res = await fetch(url);
+        if (!res.ok) throw new Error("ORS quota or network issue");
+        let data = await res.json();
+        let distMeters = data.routes[0].summary.distance;
+        let durSeconds = data.routes[0].summary.duration;
+        return {
+          mode: "driving",
+          distance: (distMeters / 1609.34).toFixed(2),
+          duration: Math.round(durSeconds / 60)
+        };
+      } catch (err) {
+        return null; // fallback
+      }
+    }
+
+    geocoder.on('markgeocode', async function(e) {
       var latlng = e.geocode.center;
       if (searchMarker) map.removeLayer(searchMarker);
       if (bufferCircle) map.removeLayer(bufferCircle);
@@ -133,16 +153,27 @@
 
         // Collect providers inside buffer
         var inside = [];
+        var tasks = [];
         defaultMarkers.eachLayer(function(layer) {
           if (layer.getLatLng && bufferCircle.getBounds().contains(layer.getLatLng())) {
-            var distMeters = map.distance(latlng, layer.getLatLng());
-            var distMiles = (distMeters / 1609.34).toFixed(2);
-            inside.push({ layer: layer, dist: parseFloat(distMiles) });
+            tasks.push((async () => {
+              let travel = await getDrivingDistance(latlng, layer.getLatLng());
+              if (travel) {
+                inside.push({ layer, dist: parseFloat(travel.distance), text: `📏 ${travel.distance} miles, ⏱ ${travel.duration} mins driving` });
+              } else {
+                // fallback: straight-line distance
+                let distMeters = map.distance(latlng, layer.getLatLng());
+                let distMiles = (distMeters / 1609.34).toFixed(2);
+                inside.push({ layer, dist: parseFloat(distMiles), text: `📏 ${distMiles} miles (straight-line)` });
+              }
+            })());
           }
         });
 
+        await Promise.all(tasks);
+
         // Sort by distance
-        inside.sort(function(a, b) { return a.dist - b.dist; });
+        inside.sort((a, b) => a.dist - b.dist);
 
         // Update results panel
         var resultsDiv = document.getElementById('results');
@@ -154,8 +185,7 @@
             var props = item.layer.feature.properties;
             var div = document.createElement('div');
             div.className = "item";
-            div.innerHTML = "<b>" + props.Name + "</b><br/>" + props.Address +
-                            "<br/><small>📏 " + item.dist.toFixed(2) + " miles away</small>";
+            div.innerHTML = `<b>${props.Name}</b><br/>${props.Address}<br/><small>${item.text}</small>`;
             div.onclick = function() {
               map.setView(item.layer.getLatLng(), 15);
               item.layer.openPopup();
